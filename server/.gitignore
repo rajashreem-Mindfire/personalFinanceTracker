@@ -1,0 +1,16 @@
+# Node modules
+node_modules/
+
+# Output build
+dist/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+
+# Swagger (if generated dynamically)
+swagger.json
+swagger.yaml
