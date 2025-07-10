@@ -1,4 +1,4 @@
-import { CreateUserInput } from '../DTOs/user.dto';
+import { CreateUserInput, UpdateUserInput } from '../DTOs/user.dto';
 import { IUser } from '../interfaces/user.interface';
 import { UserModel } from '../models/User';
 import { IUserRepository } from './user.repository.interface';
@@ -19,5 +19,14 @@ export class UserRepository implements IUserRepository {
 
     async findById(id: string): Promise<IUser | null> {
         return await UserModel.findById(id);
+    }
+    async update(id: string, user: UpdateUserInput): Promise<IUser | null> {
+        return await UserModel.findByIdAndUpdate(id, user, {
+            new: true,  // Return the updated document
+            runValidators: true, // Validate the update against the schema
+        });
+    }
+    async delete(id: string): Promise<void> {
+        await UserModel.findByIdAndDelete(id); 
     }
 }

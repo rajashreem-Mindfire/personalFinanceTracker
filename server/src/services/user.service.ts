@@ -1,7 +1,7 @@
 // services/user.service.ts
 import { UserModel } from '../models/User';
 import { IUser } from '../../src/interfaces/user.interface';
-import { CreateUserInput, UserResponse } from '../DTOs/user.dto';
+import { CreateUserInput, UpdateUserInput, UserResponse } from '../DTOs/user.dto';
 import { IUserRepository } from '../repositories/user.repository.interface';
 
 export class UserService {
@@ -32,6 +32,22 @@ export class UserService {
             throw new Error("User is not present");
         }
         return this.formatUserResponse(user);
+    };
+
+    async updateUser(id: string, dto: UpdateUserInput): Promise<UserResponse> {
+
+        // update user
+        const user = await this.userRepository.update(id, dto);
+        if (!user) {
+            throw new Error("User is not present");
+        }
+        return this.formatUserResponse(user);
+    };
+
+    async deleteUser(id: string): Promise<void> {
+
+        // delete user
+        await this.userRepository.delete(id);
     };
 
     private formatUserResponse(user: IUser): UserResponse {

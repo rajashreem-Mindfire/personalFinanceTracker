@@ -21,16 +21,13 @@ export class UserController {
         const userId = req.params.id;
         const { name, email } = req.body;
 
-        // @todo for db call
-        return res.status(200).json({
-            message: 'User updated successfully',
-            data: { id: userId, name, email }
-        });
+        const user = await this.userService.updateUser(userId, req.body);
+        return res.status(200).json(user);
     }
     public async deleteUser(req: Request, res: Response): Promise<Response> {
         const userId = req.params.id;
 
-        // @todo for db call
+        await this.userService.deleteUser(userId);
         return res.status(204).json({
             message: 'User deleted successfully',
             data: null

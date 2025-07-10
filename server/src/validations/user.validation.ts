@@ -32,9 +32,16 @@ export const addUserSchema = Joi.object({
 });
 
 export const updateUserSchema = Joi.object({
-  name: Joi.string().min(USER_CONSTANTS.NAME_MIN_LENGTH).max(USER_CONSTANTS.NAME_MAX_LENGTH),
-  email: Joi.string().email(),
-  password: Joi.string().min(USER_CONSTANTS.PASSWORD_MAX_LENGTH)
+  name: Joi.string()
+    .min(USER_CONSTANTS.NAME_MIN_LENGTH)
+    .max(USER_CONSTANTS.NAME_MAX_LENGTH),
+  email: Joi.string()
+    .email(),
+  password: Joi.string()
+    .min(USER_CONSTANTS.PASSWORD_MIN_LENGTH)
+    .max(USER_CONSTANTS.PASSWORD_MAX_LENGTH)
+    .pattern(new RegExp(USER_CONSTANTS.PASSWORD_REGEX))
+  
 }).min(1); // require at least one field
 
 export const loginSchema = Joi.object({

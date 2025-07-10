@@ -113,7 +113,7 @@ router.post(
 router.put(
   '/:id',
   validateRequest(updateUserSchema),
-  userController.updateUser
+  (req, res) => userController.updateUser(req, res)
 );
 
 /**
@@ -134,6 +134,6 @@ router.put(
  *       404:
  *         description: User not found
  */
-router.delete('/:id', userController.deleteUser);
+router.delete('/:id', (req, res) => userController.deleteUser(req, res));
 
 export default router;
