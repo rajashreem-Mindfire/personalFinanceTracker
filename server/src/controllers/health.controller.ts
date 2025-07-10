@@ -4,49 +4,49 @@ import fs from 'fs/promises';
 import mongoose from 'mongoose';
 import config from '../config';
 
-const logDir = config.ERROR_LOG_PATH || '/var/log/personalfinancetracker';
-
-export const healthCheck = async (req: Request, res: Response) => {
-    const logStatus = {
-        path: logDir,
-        status: 'unknown',
-        error: '',
-    };
-
-    const dbStatus = {
-        status: 'unknown',
-        error: '',
-    };
-
-    // check if log directory exists and is writable
-    try {
-        // check if the log directory exists and is readable/writable
-        await fs.access(logDir, fs.constants.R_OK | fs.constants.W_OK);
-        logStatus.status = 'ok';
-    } catch (err: any) {
-        logStatus.status = 'fail';
-        logStatus.error = err.message;
+export class HealthController {
+    constructor() {
     }
 
-    // check MongoDB connection
-    try {
+    public async healthCheck(req: Request, res: Response): Promise<Response> {
+        console.log('Health check initiated'+ config.ERROR_LOG_PATH);
+        const logDir = config.ERROR_LOG_PATH;
+        const logStatus: any = {};
+        const dbStatus: any = {};
 
-        // connect to mongodb
-        await mongoose.connect(config.DB_URL);
-        dbStatus.status = 'ok';
-    } catch (err: any) {
-        dbStatus.status = 'fail';
-        dbStatus.error = err.message;
+        // check if log directory is accessible
+        const logCheck = fs
+            .access(logDir, fs.constants.R_OK | fs.constants.W_OK)
+            .then(() => {
+                logStatus.status = 'ok';
+            })
+            .catch((err) => {
+                logStatus.status = 'fail';
+                logStatus.error = err.message;
+            });
+
+        // check if database is accessible
+        const dbCheck = mongoose
+            .connect(config.DB_URL)
+            .then(() => {
+                dbStatus.status = 'ok';
+            })
+            .catch((err) => {
+                dbStatus.status = 'fail';
+                dbStatus.error = err.message;
+            });
+
+        // Wait for both checks in parallel
+        await Promise.all([logCheck, dbCheck]);
+
+        const isHealthy = logStatus.status === 'ok' && dbStatus.status === 'ok';
+        return res.status(isHealthy ? 200 : 500).json({
+                    status: isHealthy ? 'UP' : 'DOWN',
+                    timestamp: new Date(),
+                    uptime: process.uptime(),
+                    mongo: dbStatus,
+                    logDir: logStatus,
+        });
     }
-
-    // prepare health status
-    const isHealthy = logStatus.status === 'ok' && dbStatus.status === 'ok';
-
-    return res.status(isHealthy ? 200 : 500).json({
-        status: isHealthy ? 'UP' : 'DOWN',
-        timestamp: new Date(),
-        uptime: process.uptime(),
-        mongo: dbStatus,
-        logDir: logStatus,
-    });
 };
+export default HealthController;

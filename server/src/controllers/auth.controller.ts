@@ -8,7 +8,7 @@ export class AuthController {
     public async login(req: Request, res: Response): Promise<Response> {
         const { email, password } = req.body;
 
-        // 🔐 Replace with real logic (DB check, password hash, JWT, etc.)
+        // Replace with real logic (DB check, password hash, JWT, etc.)
         if (email === 'admin@example.com' && password === 'admin123') {
         return res.status(200).json({ token: 'mock-jwt-token' });
         }

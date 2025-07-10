@@ -1,8 +1,9 @@
 // create healthcheck route
 import { Router } from 'express';
 import httpStatus from 'http-status-codes';
-import { healthCheck } from '../controllers/health.controller';
+import HealthController from '../controllers/health.controller';
 const router = Router();
+const healthController = new HealthController();
 
 /**
  * @openapi
@@ -15,7 +16,7 @@ const router = Router();
  *       200:
  *         description: Service is healthy
  */
-router.get('/', healthCheck);
+router.get('/', healthController.healthCheck);
 
 /**
  * @openapi
@@ -28,7 +29,7 @@ router.get('/', healthCheck);
  *       200:
  *         description: Service is healthy
  */
-router.get('/health', healthCheck);
+router.get('/health', healthController.healthCheck);
 
 /**
  * @openapi

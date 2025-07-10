@@ -1,6 +1,6 @@
 // src/routes/user.routes.ts
 import { Router } from 'express';
-import UserController from '../../controllers/user.controller';
+import { userController } from '../../modules/user.module';
 import validateRequest from '../../middlewares/validateRequest';
 import {
   addUserSchema,
@@ -8,7 +8,6 @@ import {
 } from '../../validations/user.validation';
 
 const router = Router();
-const userController = new UserController();
 
 /**
  * @openapi
@@ -20,7 +19,7 @@ const userController = new UserController();
  *       200:
  *         description: List of users
  */
-router.get('/', userController.getAllUsers);
+router.get('/', (req, res) => userController.getAllUsers(req, res));
 
 /**
  * @openapi
@@ -40,7 +39,7 @@ router.get('/', userController.getAllUsers);
  *       404:
  *         description: User not found
  */
-router.get('/:id', userController.getUserById);
+router.get('/:id', (req, res) => userController.getUserById(req, res));
 
 /**
  * @openapi
@@ -55,6 +54,17 @@ router.get('/:id', userController.getUserById);
  *         application/json:
  *           schema:
  *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *             required:
+ *               - name
+ *               - email
+ *               - password
  *             example:
  *               name: John Doe
  *               email: john@example.com
@@ -63,11 +73,10 @@ router.get('/:id', userController.getUserById);
  *       201:
  *         description: User created successfully
  */
-
 router.post(
   '/',
   validateRequest(addUserSchema),
-  userController.createUser
+  (req, res) => userController.createUser(req, res)
 );
 
 /**

@@ -1,8 +1,6 @@
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import path from 'path';
 import config from './../config';
-
 
 export default (app: any) => {
 
@@ -20,7 +18,6 @@ export default (app: any) => {
             ],
             basePath: `${config.API_PREFIX}`,
         },
-      //  apis: [path.resolve(__dirname, '../routes/v1/route.js')],
         apis: ['./src/routes/**/*.ts'],
     };
 

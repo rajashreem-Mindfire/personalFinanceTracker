@@ -1,9 +1,9 @@
 // src/config/index.ts
-import * as constants from './constants.config';
+import * as core from './core.config';
 import * as env from './env.config';
 
 const config = {
-  ...constants,
+  ...core,
   ...env,
 };
 
